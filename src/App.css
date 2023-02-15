@@ -1,0 +1,58 @@
+.content {
+  margin-top: 50px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  text-align: center;
+}
+
+html {
+  background-image:  linear-gradient(to bottom right, #FFF, #808080);
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background-image:  linear-gradient(to bottom right, #FFF, #808080);
+  height: 100%;
+}
+
+.tabbar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: 50px;
+  background-color: rgb(76, 76, 76);
+  text-align: center;
+  color: white;
+  user-select: none;
+}
+
+.footer {
+  padding-bottom:60px;
+  text-align: center;
+  user-select: none;
+  color: white;
+}
+
+.link {
+  color: white;
+  text-decoration: none;
+  user-select: none;
+}
+
+.tabbarspaces {
+  padding-top: 1px;
+  text-align: center;
+  color: white;
+}
+
+.icon {
+  color: black;
+}
+
+.active {
+  background-color: rgba(0, 0, 0, 0.532);
+  border-radius: 360px;
+}
