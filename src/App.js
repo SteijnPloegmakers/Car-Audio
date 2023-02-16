@@ -1,8 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from './pages/Home';
-import About from './pages/About';
+import NL from './pages/NL';
+import EN from './pages/EN';
 import TabBar from './components/TabBar';
 import SideBar from './components/SideBar';
 
@@ -11,8 +11,8 @@ function App() {
     <Router>
       <div className="content">
         <Routes>
-          <Route exact path="/" element={<Home/>} />
-          <Route exact path="/en" element={<About/>} />
+          <Route exact path="/" element={<NL/>} />
+          <Route exact path="/en" element={<EN/>} />
         </Routes>
         <TabBar></TabBar>
       </div>
