@@ -1,10 +1,8 @@
-import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NL from './pages/NL';
 import EN from './pages/EN';
 import TabBar from './components/TabBar';
-import SideBar from './components/SideBar';
 
 function App() {
   return (

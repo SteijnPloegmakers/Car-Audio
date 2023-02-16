@@ -44,10 +44,8 @@ export default function Commands() {
         }
     ]
     const { transcript, isMicrophoneAvailable, resetTranscript } = useSpeechRecognition({ commands })
-    let amount;
     if (transcript.length > 0) {
         console.log(transcript)
-        amount = transcript.length;
     }
 
     if (!SpeechRecognition.browserSupportsSpeechRecognition) {
@@ -67,7 +65,7 @@ export default function Commands() {
             <label>Say anything you want!</label>
             <p>{transcript}</p>
             <p>{display}</p>
-            <img hidden id="big" src="https://media.s-bol.com/7vN4DDKm6k1/550x676.jpg"></img>
+            <img hidden id="big" src="https://media.s-bol.com/7vN4DDKm6k1/550x676.jpg" alt="bigchungus"></img>
         </div>
     )
 }

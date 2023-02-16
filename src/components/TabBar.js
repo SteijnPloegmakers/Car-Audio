@@ -1,4 +1,4 @@
-import { faBook, faFlag, faFlagUsa, faHome } from "@fortawesome/free-solid-svg-icons";
+import { faFlag, faFlagUsa } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 
