@@ -5,7 +5,7 @@ SpeechRecognition.stopListening();
 
 export default function Commands() {
     const [display, setDisplay] = useState('') //display for our message
-    SpeechRecognition.startListening({ continuous: true, language: "en-US" });
+    SpeechRecognition.startListening({ continuous: true });
     const commands = [
         {
             command: ['big chungus', '*big chungus*'],          //command the user says, * is any input
