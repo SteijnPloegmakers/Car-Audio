@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios';
 
 function Test() {
 
@@ -15,7 +14,6 @@ function Test() {
 
   let [token, setToken] = useState() // Authorization Token
   let [currSong, setCurrSong] = useState()
-  let [deviceID, setDeviceID] = useState()
 
   useEffect(() => {
 
@@ -40,7 +38,8 @@ function Test() {
     }
   }, [])
 
-  const getCurrentSong = async(token) => {
+
+  const getCurrentSong = async (token) => {
     await fetch("https://api.spotify.com/v1/me/player", {
       method: 'GET',
       headers: {
@@ -71,7 +70,6 @@ function Test() {
 
   }
   const nextSong = async () => {
-
     await fetch("https://api.spotify.com/v1/me/player/next", {
       method: 'POST',
       headers: {
@@ -79,14 +77,32 @@ function Test() {
         'Content-Type': 'application/json'
       }
     })
-      .then(
-        await getCurrentSong(token),
-        console.log("fuckyou")
-      )
-
+      .then((res) => {
+        console.log(res);
+        // Get the updated song information directly from the Spotify API
+        fetch("https://api.spotify.com/v1/me/player", {
+          method: 'GET',
+          headers: {
+            Authorization: "Bearer " + token,
+            'Content-Type': 'application/json',
+          },
+        })
+          .then((response) => response.json())
+          .then(data => {
+            console.log(data);
+            setCurrSong({
+              item: data.item,
+              is_playing: data.is_playing,
+              progress_ms: data.progress_ms,
+            });
+          })
+          .catch(error => console.error('Error fetching current song:', error));
+        console.log("Song changed successfully.");
+      })
+      .catch(error => console.error('Error changing song:', error));
   }
-  const previousSong = async () => {
 
+  const previousSong = async () => {
     await fetch("https://api.spotify.com/v1/me/player/previous", {
       method: 'POST',
       headers: {
@@ -94,11 +110,29 @@ function Test() {
         'Content-Type': 'application/json'
       }
     })
-      .then(
-        await getCurrentSong(token),
-        console.log("fuckyou")
-      )
-
+      .then((res) => {
+        console.log(res);
+        // Get the updated song information directly from the Spotify API
+        fetch("https://api.spotify.com/v1/me/player", {
+          method: 'GET',
+          headers: {
+            Authorization: "Bearer " + token,
+            'Content-Type': 'application/json',
+          },
+        })
+          .then((response) => response.json())
+          .then(data => {
+            console.log(data);
+            setCurrSong({
+              item: data.item,
+              is_playing: data.is_playing,
+              progress_ms: data.progress_ms,
+            });
+          })
+          .catch(error => console.error('Error fetching current song:', error));
+        console.log("Song changed successfully.");
+      })
+      .catch(error => console.error('Error changing song:', error));
   }
 
   const playSong = () => {
