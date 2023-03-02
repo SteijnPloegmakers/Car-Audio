@@ -1,5 +1,5 @@
 .content {
-  margin-top: 50px;
+  margin-top: 10px;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -7,13 +7,13 @@
 }
 
 html {
-  background-image:  linear-gradient(to bottom right, #FFF, #808080);
+  background-image:  linear-gradient(to bottom right, #d207e8, #cb7218);
   height: 100%;
   overflow: hidden;
 }
 
 body {
-  background-image:  linear-gradient(to bottom right, #FFF, #808080);
+  background-image:  linear-gradient(to bottom right, #d207e8, #cb7218);
   height: 100%;
 }
 
