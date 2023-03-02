@@ -5,7 +5,7 @@ function Test() {
   const authEndpoint = "https://accounts.spotify.com/authorize/?"
 
   const clientId = "c12a19b4c59744a797e50a4c058b753e" // Find ClientID on Spotify Dashboard
-  const redirectUri = "https://localhost:3000" // Where to go after sign in
+  const redirectUri = "http://localhost:3000" // Where to go after sign in
   const scopes = [
     'user-read-currently-playing',
     'user-read-playback-state',
