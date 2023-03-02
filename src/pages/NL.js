@@ -64,7 +64,7 @@ export default function Commands() {
             <label>Zeg alles wat je wilt!</label>
             <p>{transcript}</p>
             <p>{display}</p>
-            <img hidden id="big" src="https://media.s-bol.com/7vN4DDKm6k1/550x676.jpg" alt="bigchungus"></img>
+            <img hidden id="big" src="https://media.s-bol.com/7vN4DDKm6k1/550x676.jpg" alt="bigchungus"/>
         </div>
     )
 }
