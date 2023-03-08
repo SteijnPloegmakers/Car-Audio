@@ -5,14 +5,18 @@ import './css/broadway.css'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { faPlay, faPause, faForward, faBackward, faShuffle, faRepeat } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import NoSleep from 'nosleep.js';
 
 function Test() {
+
+  const nosleep = new NoSleep();
+  nosleep.enable();
 
   const authEndpoint = "https://accounts.spotify.com/authorize/?"
 
   const clientId = "c12a19b4c59744a797e50a4c058b753e"
-  //const redirectUri = "https://i491216.hera.fhict.nl"
-  const redirectUri = "https://localhost:3000"
+  const redirectUri = "https://i491216.hera.fhict.nl"
+  //const redirectUri = "https://localhost:3000"
   const scopes = [
     'user-read-currently-playing',
     'user-read-playback-state',
