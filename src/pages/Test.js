@@ -6,7 +6,7 @@ function Test() {
   const authEndpoint = "https://accounts.spotify.com/authorize/?"
 
   const clientId = "c12a19b4c59744a797e50a4c058b753e"
-  const redirectUri = "https://localhost:3000"
+  const redirectUri = "https://i491216.hera.fhict.nl"
   const scopes = [
     'user-read-currently-playing',
     'user-read-playback-state',
