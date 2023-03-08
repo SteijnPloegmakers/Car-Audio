@@ -1,4 +1,7 @@
 import { useEffect, useState } from 'react'
+import logo from './photos/logo2.png'
+import spotify from './photos/spotify.png'
+import './css/broadway.css'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 function Test() {
@@ -196,13 +199,16 @@ function Test() {
   return (
     <div className="App">
       <header className="App-header">
-
+        <img src={logo} alt="Logo" width='512'/><br/>
         {!token && (
           <a
             className="btn btn--loginApp-link"
             href={`${authEndpoint}client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join("%20")}&response_type=token&show_dialog=true`}
           >
-            <button>Login to Spotify</button>
+            <button className="SpotifyBtn">
+              <img className="SpotifyImg" src={spotify} alt="Spotify Logo" width='40'/>
+              <p>CONNECT WITH SPOTIFY</p>
+            </button>
           </a>
         )}
         {token && (<>
