@@ -7,16 +7,16 @@ import TabBar from './components/TabBar';
 
 function App() {
   return (
-    <Router>
-      <div className="content">
+    <div className="content" id="bg">
+      <Router>
         <Routes>
-          <Route exact path="/nl" element={<NL/>} />
-          <Route exact path="/en" element={<EN/>} />
-          <Route exact path="/" element={<Test/>} />
+          <Route exact path="/nl" element={<NL />} />
+          <Route exact path="/en" element={<EN />} />
+          <Route exact path="/" element={<Test />} />
         </Routes>
         <TabBar></TabBar>
-      </div>
-    </Router>
+      </Router>
+    </div>
   );
 }
 
