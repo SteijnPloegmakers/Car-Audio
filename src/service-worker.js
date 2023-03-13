@@ -1,19 +1,19 @@
 /* eslint-disable no-restricted-globals */
-
+const offlinePage = 'offline.html';
 const selfManifest = self.__WB_MANIFEST;
 let pushdata;
 const cacheName = "broadwayCache";
 //Just take into account that the "files" below are request-url's and not filenames perse. So for your root of your website yous should include "./" and if you use my site (or another plain HTML-site) also "index.html". If you use a server-side language and have friendly url's that could be something like "news/this-is-a-newsarticle/".
 const appFiles = [
   "manifest.json",
-  /static\/js\/main\..*\.js/,
-  "static/css/main.5b6d4cfc.css",
   "./",
-  "index.html",
   "logo192.png",
   "logo512.png",
-  "favicon.ico"
+  "favicon.ico",
+  "logo2.png",
+  "offline.html"
 ];
+
 
 self.addEventListener("install", (installing) => {
   console.log("Service Worker: I am being installed, hello world!");
@@ -35,21 +35,17 @@ self.addEventListener("activate", (activating) => {
 self.addEventListener("fetch", (fetching) => {
   console.log("Service Worker: User threw a ball, I need to fetch it!");
   fetching.respondWith(
-    caches.match(fetching.request.url).then((response) => {
-      console.log("Service Worker: Fetching resource " + fetching.request.url);
-      return response || fetch(fetching.request).then((response) => {
-        console.log("Service Worker: Resource " + fetching.request.url + " not available in cache");
-        return caches.open(cacheName).then((cache) => {
-          console.log("Service Worker: Caching (new) resource " + fetching.request.url);
-          // OUTCOMMENT THIS LINE FOR ADDING DOWNLOADED RESOURCES TO YOUR CACHE: cache.put(fetching.request,response.clone());
-          return response;
+      caches.match(fetching.request).then((response) => {
+        return response || fetch(fetching.request).catch(() => {
+          return caches.match(offlinePage);
         });
-      }).catch(function () {
-        console.log("Service Worker: Fetching online failed, HAALLPPPP!!!");
-        //Do something else with the request (for example: respond with a different cached file)
       })
-    })
   );
+  if (fetching.request.url.endsWith("offline.css")) {
+    fetching.respondWith(
+        caches.match("offline.css")
+    );
+  }
 });
 
 self.addEventListener("push", (pushing) => {
