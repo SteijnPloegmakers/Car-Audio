@@ -10,15 +10,33 @@ html {
   height: 100%;
 }
 
-body {
-  background-image: linear-gradient(to bottom right, #d207e8, #cb7218);
-  background-color: #000;
-  backdrop-filter: saturate(150%) blur(10px);
-  background-position: center;
-  background-size: cover;
-  background-attachment: fixed;
-  height: 100%;
+.credits {
+  color: white;
+  font-weight: 500;
+  font-size: large;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
+
+body {
+  background-image: linear-gradient(-45deg, #000,#000,#000, #000,#000,#000, #98843d, #000,#000,#000, #000,#000,#000, #000);
+	background-size: 400% 400%;
+	animation: gradient 15s infinite;
+	height: 100vh;
+  backdrop-filter: blur(15px);
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
 
 .tabbar {
   position: absolute;
@@ -68,7 +86,7 @@ body {
 }
 
 .SpotifyBtn {
-  max-width: 312px;
+  max-width: 290px;
   align-content: center;
   display: flex;
   height: 80px;
@@ -76,7 +94,7 @@ body {
 }
 
 .container {
-  background-color: rgba(0, 0, 0, 0.50);
+  background-color: rgba(0, 0, 0, 0.5);
   border-radius: 30px;
   margin: 10px;
   padding: 20px;

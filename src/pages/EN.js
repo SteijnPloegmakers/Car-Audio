@@ -6,6 +6,8 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 import { faPlay, faPause, faForward, faBackward, faShuffle, faRepeat, faCircleArrowDown, } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import NoSleep from 'nosleep.js';
+import englishcommands from './audio/englishcommands.mp3'
+import dutchcommands from './audio/dutchcommands.mp3'
 
 const nosleep = new NoSleep();
 nosleep.enable();
@@ -19,7 +21,6 @@ const LANGUAGE_MAP = {
   TO DO:
   - Command list
   - Conversations with app
-  - Specific song requests?????????
   - Warning user about upcoming siren wielding vehicles
   - Traffic Information and similar shit?????????
   - 
@@ -37,6 +38,8 @@ function EN() {
     });
   });
 
+  // var dutchaudio = new Audio(dutchcommands);
+  // var englishaudio = new Audio(englishcommands);
 
   const authEndpoint = "https://accounts.spotify.com/authorize/?"
 
@@ -138,6 +141,10 @@ function EN() {
         }
 
         document.body.style.backgroundImage = "url(" + data.item.album.images[0].url + ")";
+        document.body.style.backgroundSize = "cover";
+        document.body.style.animation = "none";
+        document.body.style.backgroundPosition = "center";
+        document.body.style.backgroundAttachment = "fixed";
       })
       .catch(error => console.error('Error fetching current song:', error))
   }
@@ -248,6 +255,8 @@ function EN() {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
+  
+
   const commands = Object.keys(LANGUAGE_MAP).flatMap(language => {
     let playCommand;
     let pauseCommand;
@@ -258,27 +267,41 @@ function EN() {
     let repeatOnCommand;
     let repeatOffCommand;
     let volumeCommand;
+    let logoutCommand;
+    //let listCommand;
     //let languageCommand;
 
     if (language == "Engels") {
       playCommand = {
         command: ['play', 'continue', 'start', '*play*', '*continue*', '*start*'],
-        callback: () => { playSong(); resetTranscript(); setLastCommand("Starting Track...") },
+        callback: () => {
+          playSong(); resetTranscript(); setLastCommand("Starting Track...");
+          //if (englishaudio.is_playing || dutchaudio.is_playing) { englishaudio.pause(); dutchaudio.pause(); englishaudio.currentTime = 0; dutchaudio.currentTime = 0; }
+        },
         matchInterim: true
       };
       pauseCommand = {
         command: ['stop', 'pause', '*stop*', '*pause*'],
-        callback: () => { pauseSong(); resetTranscript(); setLastCommand("Pausing Track...") },
+        callback: () => {
+          pauseSong(); resetTranscript(); setLastCommand("Pausing Track...");
+          //if (englishaudio.is_playing || dutchaudio.is_playing) { englishaudio.pause(); dutchaudio.pause(); englishaudio.currentTime = 0; dutchaudio.currentTime = 0; }
+        },
         matchInterim: true
       };
       nextCommand = {
         command: ['next (song) (track)', 'skip'],
-        callback: () => { nextSong(); resetTranscript(); setLastCommand("Playing Next Track...") },
+        callback: () => {
+          nextSong(); resetTranscript(); setLastCommand("Playing Next Track...");
+          // if (englishaudio.is_playing || dutchaudio.is_playing) { englishaudio.pause(); dutchaudio.pause(); englishaudio.currentTime = 0; dutchaudio.currentTime = 0; }
+        },
         matchInterim: true
       };
       previousCommand = {
         command: ['previous (song) (track)', 'go back'],
-        callback: () => { previousSong(); resetTranscript(); setLastCommand("Playing Previous Track...") },
+        callback: () => {
+          previousSong(); resetTranscript(); setLastCommand("Playing Previous Track...");
+          // if (englishaudio.is_playing || dutchaudio.is_playing) { englishaudio.pause(); dutchaudio.pause(); englishaudio.currentTime = 0; dutchaudio.currentTime = 0; }
+        },
         matchInterim: true
       };
       shuffleOnCommand = {
@@ -305,26 +328,46 @@ function EN() {
         command: ['(set) volume :number (percent)'],
         callback: (number) => { setVolume(number); resetTranscript(); setLastCommand("Setting Volume..."); },
       };
+      logoutCommand = {
+        command: ['logout', 'log out'],
+        callback: () => { window.location.reload(); },
+      };
+      // listCommand = {
+      //   command: ['commands', '*commands*'],
+      //   callback: () => { pauseSong(); resetTranscript(); setLastCommand("Listing Commands..."); englishaudio.play(); },
+      // };
     }
     else {
       playCommand = {
         command: ['*speel*', '(ga) verder', 'start', 'speel'],
-        callback: () => { playSong(); resetTranscript(); setLastCommand("Nummer afspelen...") },
+        callback: () => {
+          playSong(); resetTranscript(); setLastCommand("Nummer afspelen...");
+          //if (englishaudio.is_playing || dutchaudio.is_playing) { englishaudio.pause(); dutchaudio.pause(); englishaudio.currentTime = 0; dutchaudio.currentTime = 0; }
+        },
         matchInterim: true
       };
       pauseCommand = {
         command: ['stop', 'pauze', 'pauzeer'],
-        callback: () => { pauseSong(); resetTranscript(); setLastCommand("Nummer pauzeren...") },
+        callback: () => {
+          pauseSong(); resetTranscript(); setLastCommand("Nummer pauzeren...");
+          //if (englishaudio.is_playing || dutchaudio.is_playing) { englishaudio.pause(); dutchaudio.pause(); englishaudio.currentTime = 0; dutchaudio.currentTime = 0; }
+        },
         matchInterim: true
       };
       nextCommand = {
         command: ['volgend (lied) (nummer)', 'volgende'],
-        callback: () => { nextSong(); resetTranscript(); setLastCommand("Volgend nummer spelen...") },
+        callback: () => {
+          nextSong(); resetTranscript(); setLastCommand("Volgend nummer spelen...");
+          //if (englishaudio.is_playing || dutchaudio.is_playing) { englishaudio.pause(); dutchaudio.pause(); englishaudio.currentTime = 0; dutchaudio.currentTime = 0; }
+        },
         matchInterim: true
       };
       previousCommand = {
         command: ['vorig (lied) (nummer)', 'vorige', '(ga) terug'],
-        callback: () => { previousSong(); resetTranscript(); setLastCommand("Vorig nummer spelen...") },
+        callback: () => {
+          previousSong(); resetTranscript(); setLastCommand("Vorig nummer spelen...");
+          //if (englishaudio.is_playing || dutchaudio.is_playing) { englishaudio.pause(); dutchaudio.pause(); englishaudio.currentTime = 0; dutchaudio.currentTime = 0; }
+        },
         matchInterim: true
       };
       shuffleOnCommand = {
@@ -351,6 +394,14 @@ function EN() {
         command: ['(zet) volume :number (procent)'],
         callback: (number) => { setVolume(number); resetTranscript(); setLastCommand("Volume Aanpassen..."); },
       };
+      logoutCommand = {
+        command: ['log uit'],
+        callback: () => { pauseSong(); window.location.reload(); },
+      };
+      // listCommand = {
+      //   command: ["commando's", "*commando's*"],
+      //   callback: () => { pauseSong(); resetTranscript(); setLastCommand("Listing Commands..."); dutchaudio.play(); },
+      // };
     }
     const languageCommand = {
       command: ['(switch to) (wissel naar) ' + language, '*' + language + '*'],
@@ -364,7 +415,7 @@ function EN() {
       matchInterim: true
     };
     return [playCommand, pauseCommand, nextCommand, previousCommand, shuffleOnCommand, shuffleOffCommand,
-      repeatOnCommand, repeatOffCommand, volumeCommand, languageCommand];
+      repeatOnCommand, repeatOffCommand, volumeCommand, logoutCommand, /*listCommand*/, languageCommand];
   });
   const { transcript, isMicrophoneAvailable, resetTranscript } = useSpeechRecognition({ commands })
 
@@ -415,9 +466,12 @@ function EN() {
             >
               <button className="SpotifyBtn">
                 <img className="SpotifyImg" src={spotify} alt="Spotify Logo" width='40' />
-                <p>CONNECT WITH SPOTIFY</p>
+                <p>LOG IN WITH SPOTIFY</p>
               </button>
             </a>
+            <br/>
+            <br/>
+            <p className='credits'>Made By: <br/> Steijn Ploegmakers & <br/> Viggo Seerden</p>
           </div>
         )}
         {token && (<div className='container'>
@@ -488,8 +542,8 @@ function EN() {
         )}
         <button hidden id="installbtn" className='installbtn' onClick={installPWA}><FontAwesomeIcon icon={faCircleArrowDown} /> INSTALL PWA</button>
       </header>
-      <br/>
-      <br/>
+      <br />
+      <br />
     </div>
   );
 }
