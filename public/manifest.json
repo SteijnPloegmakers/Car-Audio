@@ -1,6 +1,6 @@
 {
-  "short_name": "PWA Test",
-  "name": "Progressive Web Application Sample",
+  "short_name": "Broadway",
+  "name": "Broadway: Spotify player for in your car!",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,7 +20,7 @@
   ],
   "start_url": "/",
   "scope": "/",
-  "display": "minimal-ui",
+  "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff",
   "serviceWorker": {
