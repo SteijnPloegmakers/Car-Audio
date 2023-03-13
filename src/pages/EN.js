@@ -3,7 +3,7 @@ import logo from './photos/logo2.png'
 import spotify from './photos/spotify.png'
 import './css/broadway.css'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
-import { faPlay, faPause, faForward, faBackward, faShuffle, faRepeat } from "@fortawesome/free-solid-svg-icons";
+import { faPlay, faPause, faForward, faBackward, faShuffle, faRepeat, faCircleArrowDown, } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import NoSleep from 'nosleep.js';
 
@@ -15,7 +15,28 @@ const LANGUAGE_MAP = {
   'Dutch': 'nl-NL'
 }
 
+/*
+  TO DO:
+  - Command list
+  - Conversations with app
+  - Specific song requests?????????
+  - Warning user about upcoming siren wielding vehicles
+  - Traffic Information and similar shit?????????
+  - 
+*/
+
 function EN() {
+
+  let installPrompt; //Variable to store the install action in
+  useEffect(() => {
+    window.addEventListener("beforeinstallprompt", (event) => {
+      event.preventDefault(); //Prevent the event (this prevents the default bar to show up)
+      installPrompt = event; //Install event is stored for triggering it later
+
+      document.getElementById("installbtn").hidden = false;
+    });
+  });
+
 
   const authEndpoint = "https://accounts.spotify.com/authorize/?"
 
@@ -39,6 +60,7 @@ function EN() {
   const [repeat, setRepeat] = useState();
 
   const [language, setLanguage] = useState("en-US");
+  const [volume, setVolumeIndicator] = useState();
 
   useEffect(() => {
     let interval;
@@ -100,12 +122,11 @@ function EN() {
         setCurrSong({
           item: data.item,
         });
-        console.log(data.item.duration_ms)
         setTime(data.progress_ms)
-        setDuration(data.item.duration_ms)
-        console.log(data.is_playing)
+        setDuration(data.item.duration_ms + 100)
         setRunning(data.is_playing)
         setShuffle(data.shuffle_state)
+        setVolumeIndicator(data.device.volume_percent)
         if (data.replay_state === "off") {
           setRepeat(false)
         }
@@ -122,7 +143,6 @@ function EN() {
   }
 
   const playSong = () => {
-
     fetch("https://api.spotify.com/v1/me/player/play", {
       method: 'PUT',
       headers: {
@@ -214,6 +234,16 @@ function EN() {
       .catch(error => console.error('Error changing song:', error));
   }
 
+  const setVolume = (number) => {
+    fetch("https://api.spotify.com/v1/me/player/volume?volume_percent=" + number.replace("%", ""), {
+      method: 'PUT',
+      headers: {
+        Authorization: "Bearer " + token
+      }
+    })
+    setVolumeIndicator(number.replace("%", ""));
+  }
+
   async function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
@@ -227,6 +257,7 @@ function EN() {
     let shuffleOffCommand;
     let repeatOnCommand;
     let repeatOffCommand;
+    let volumeCommand;
     //let languageCommand;
 
     if (language == "Engels") {
@@ -270,6 +301,10 @@ function EN() {
         callback: () => { toggleRepeat(false); resetTranscript(); setLastCommand("Disabling Repeat..."); },
         matchInterim: true
       };
+      volumeCommand = {
+        command: ['(set) volume :number (percent)'],
+        callback: (number) => { setVolume(number); resetTranscript(); setLastCommand("Setting Volume..."); },
+      };
     }
     else {
       playCommand = {
@@ -312,6 +347,10 @@ function EN() {
         callback: () => { toggleRepeat(false); resetTranscript(); setLastCommand("Disabling Repeat..."); },
         matchInterim: true
       };
+      volumeCommand = {
+        command: ['(zet) volume :number (procent)'],
+        callback: (number) => { setVolume(number); resetTranscript(); setLastCommand("Volume Aanpassen..."); },
+      };
     }
     const languageCommand = {
       command: ['(switch to) (wissel naar) ' + language, '*' + language + '*'],
@@ -324,13 +363,14 @@ function EN() {
       },
       matchInterim: true
     };
-    return [playCommand, pauseCommand, nextCommand, previousCommand, shuffleOnCommand, shuffleOffCommand, repeatOnCommand, repeatOffCommand, languageCommand];
+    return [playCommand, pauseCommand, nextCommand, previousCommand, shuffleOnCommand, shuffleOffCommand,
+      repeatOnCommand, repeatOffCommand, volumeCommand, languageCommand];
   });
   const { transcript, isMicrophoneAvailable, resetTranscript } = useSpeechRecognition({ commands })
 
-  if (transcript.length > 0) {
-    console.log(transcript)
-  }
+  // if (transcript.length > 0) {
+  //   console.log(transcript)
+  // }
 
   async function setLastCommand(command) {
     document.getElementById("lastcommand").innerHTML = command;
@@ -350,6 +390,18 @@ function EN() {
     </div>)
   }
 
+  function installPWA() {
+    //Recognize the install variable from before?
+    installPrompt.prompt();
+    document.getElementById("installbtn").hidden = true;
+    installPrompt.userChoice.then((choiceResult) => {
+      document.getElementById("installbtn").hidden = true;
+      if (choiceResult.outcome !== "accepted") {
+        document.getElementById("installbtn").hidden = false;
+      }
+      installPrompt = null;
+    });
+  }
 
   return (
     <div className="pagecontent" id="bgimagediv">
@@ -372,7 +424,8 @@ function EN() {
           {currSong ? <>
             <img src={currSong.item.album.images[0].url} alt="Album Cover" width="25%" height="25%" className="albumcover" />
             <h3>{currSong.item.name}</h3>
-            <p>{currSong.item.artists[0].name}</p>
+            <p>Artist: {currSong.item.artists[0].name}</p>
+            <p>Album: {currSong.item.album.name}</p>
             <br />
             <div>
               <button className="controlbtn" onClick={previousSong}><FontAwesomeIcon className="fa-2x" icon={faBackward} color="white" /></button>
@@ -386,13 +439,13 @@ function EN() {
             <br />
             <div>
               {repeat ?
-                <button id="repeat" className="controlbtn" onClick={() => toggleRepeat(false)}><FontAwesomeIcon className="fa-2x" icon={faRepeat} color="green" /></button>
+                <button id="repeat" className="controlbtn" onClick={() => toggleRepeat(false)}><FontAwesomeIcon className="fa-2x" icon={faRepeat} color="#1BD760" /></button>
                 :
                 <button id="repeat" className="controlbtn" onClick={() => toggleRepeat(true)}><FontAwesomeIcon className="fa-2x" icon={faRepeat} color="white" /></button>
               }
 
               {shuffle ?
-                <button id="shuffle" className="controlbtn" onClick={() => toggleShuffle(false)}><FontAwesomeIcon className="fa-2x" icon={faShuffle} color="green" /></button>
+                <button id="shuffle" className="controlbtn" onClick={() => toggleShuffle(false)}><FontAwesomeIcon className="fa-2x" icon={faShuffle} color="#1BD760" /></button>
                 :
                 <button id="shuffle" className="controlbtn" onClick={() => toggleShuffle(true)}><FontAwesomeIcon className="fa-2x" icon={faShuffle} color="white" /></button>
               }
@@ -404,11 +457,19 @@ function EN() {
             <br />
             <br />
             {language === "en-US" ?
-              <p>Current Language: English</p>
+              <>
+                <p>Current Language: English</p>
+                <br />
+                <p>Current Volume: {volume}%</p>
+              </>
               :
-              <p>Huidige Taal: Nederlands</p>
+              <>
+                <p>Huidige Taal: Nederlands</p>
+                <br />
+                <p>Huidig Volume: {volume}%</p>
+              </>
             }
-            <br />
+
             <br />
             <p id="lastcommand"></p>
             {/* {running ?
@@ -422,9 +483,13 @@ function EN() {
               <h4>Oops, something went wrong.</h4>
               <p>Make sure that you have opened Spotify on your device and have started a playlist! Refresh this page to try logging in again.</p>
             </>}
+
         </div>
         )}
+        <button hidden id="installbtn" className='installbtn' onClick={installPWA}><FontAwesomeIcon icon={faCircleArrowDown} /> INSTALL PWA</button>
       </header>
+      <br/>
+      <br/>
     </div>
   );
 }
