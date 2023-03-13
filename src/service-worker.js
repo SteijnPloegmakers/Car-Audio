@@ -7,10 +7,11 @@ const cacheName = "broadwayCache";
 const appFiles = [
   "manifest.json",
   "./",
-  "offline.html",
   "logo192.png",
   "logo512.png",
-  "favicon.ico"
+  "favicon.ico",
+  "logo2.png",
+  "offline.html"
 ];
 
 
@@ -40,6 +41,11 @@ self.addEventListener("fetch", (fetching) => {
         });
       })
   );
+  if (fetching.request.url.endsWith("offline.css")) {
+    fetching.respondWith(
+        caches.match("offline.css")
+    );
+  }
 });
 
 self.addEventListener("push", (pushing) => {
