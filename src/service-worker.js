@@ -41,11 +41,6 @@ self.addEventListener("fetch", (fetching) => {
         });
       })
   );
-  if (fetching.request.url.endsWith("offline.css")) {
-    fetching.respondWith(
-        caches.match("offline.css")
-    );
-  }
 });
 
 self.addEventListener("push", (pushing) => {
