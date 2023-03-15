@@ -6,8 +6,9 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 import { faPlay, faPause, faForward, faBackward, faShuffle, faRepeat, faCircleArrowDown, } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import NoSleep from 'nosleep.js';
-import englishcommands from './audio/englishcommands.mp3'
-import dutchcommands from './audio/dutchcommands.mp3'
+import Popup from 'reactjs-popup';
+// import englishcommands from './audio/englishcommands.mp3'
+// import dutchcommands from './audio/dutchcommands.mp3'
 
 const nosleep = new NoSleep();
 nosleep.enable();
@@ -108,7 +109,7 @@ function EN() {
         language: 'en-US'
       })
     }
-  }, [])
+  })
 
 
   const getCurrentSong = async (token) => {
@@ -255,8 +256,6 @@ function EN() {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  
-
   const commands = Object.keys(LANGUAGE_MAP).flatMap(language => {
     let playCommand;
     let pauseCommand;
@@ -268,12 +267,13 @@ function EN() {
     let repeatOffCommand;
     let volumeCommand;
     let logoutCommand;
+    let listCommandBtn;
     //let listCommand;
     //let languageCommand;
 
-    if (language == "Engels") {
+    if (language === "Engels") {
       playCommand = {
-        command: ['play', 'continue', 'start', '*play*', '*continue*', '*start*'],
+        command: ['play', 'continue', 'start'],
         callback: () => {
           playSong(); resetTranscript(); setLastCommand("Starting Track...");
           //if (englishaudio.is_playing || dutchaudio.is_playing) { englishaudio.pause(); dutchaudio.pause(); englishaudio.currentTime = 0; dutchaudio.currentTime = 0; }
@@ -281,7 +281,7 @@ function EN() {
         matchInterim: true
       };
       pauseCommand = {
-        command: ['stop', 'pause', '*stop*', '*pause*'],
+        command: ['stop', 'pause'],
         callback: () => {
           pauseSong(); resetTranscript(); setLastCommand("Pausing Track...");
           //if (englishaudio.is_playing || dutchaudio.is_playing) { englishaudio.pause(); dutchaudio.pause(); englishaudio.currentTime = 0; dutchaudio.currentTime = 0; }
@@ -330,7 +330,11 @@ function EN() {
       };
       logoutCommand = {
         command: ['logout', 'log out'],
-        callback: () => { window.location.reload(); },
+        callback: () => { resetTranscript(); pauseSong(); window.location.reload(); },
+      };
+      listCommandBtn = {
+        command: ['commands'],
+        callback: () => { resetTranscript(); showHideCommands(); },
       };
       // listCommand = {
       //   command: ['commands', '*commands*'],
@@ -396,7 +400,11 @@ function EN() {
       };
       logoutCommand = {
         command: ['log uit'],
-        callback: () => { pauseSong(); window.location.reload(); },
+        callback: () => { resetTranscript(); pauseSong(); window.location.reload(); },
+      };
+      listCommandBtn = {
+        command: ["commando's"],
+        callback: () => { resetTranscript(); showHideCommands(); },
       };
       // listCommand = {
       //   command: ["commando's", "*commando's*"],
@@ -415,13 +423,19 @@ function EN() {
       matchInterim: true
     };
     return [playCommand, pauseCommand, nextCommand, previousCommand, shuffleOnCommand, shuffleOffCommand,
-      repeatOnCommand, repeatOffCommand, volumeCommand, logoutCommand, /*listCommand*/, languageCommand];
+      repeatOnCommand, repeatOffCommand, volumeCommand, logoutCommand, /*listCommand,*/ listCommandBtn, languageCommand];
   });
   const { transcript, isMicrophoneAvailable, resetTranscript } = useSpeechRecognition({ commands })
 
-  // if (transcript.length > 0) {
-  //   console.log(transcript)
-  // }
+  if (transcript.length > 0) {
+    console.log(transcript)
+  }
+
+  async function showHideCommands() {
+    document.getElementById("popupbtn").click();
+    await sleep(5000);
+    document.getElementById("closebtn").click();
+  }
 
   async function setLastCommand(command) {
     document.getElementById("lastcommand").innerHTML = command;
@@ -469,9 +483,9 @@ function EN() {
                 <p>LOG IN WITH SPOTIFY</p>
               </button>
             </a>
-            <br/>
-            <br/>
-            <p className='credits'>Made By: <br/> Steijn Ploegmakers & <br/> Viggo Seerden</p>
+            <br />
+            <br />
+            <p className='credits'>Made By: <br /> Steijn Ploegmakers & <br /> Viggo Seerden</p>
           </div>
         )}
         {token && (<div className='container'>
@@ -515,12 +529,66 @@ function EN() {
                 <p>Current Language: English</p>
                 <br />
                 <p>Current Volume: {volume}%</p>
+                <Popup
+                  trigger={<button className="popupbtn" id="popupbtn"> Command List </button>}
+                  modal
+                  nested
+                >
+                  {close => (
+                    <div className="modal">
+                      <button className="close" id="closebtn" onClick={close}>
+                        &times;
+                      </button>
+                      <div className="header"> Command List </div>
+                      <div className="content">
+                        - Play/Start/Continue: Start or resume playback <br />
+                        - Pause/Stop: Pause playback <br />
+                        - Next/Skip: Play next song in queue <br />
+                        - Previous/Back: Play previous song in queue <br />
+                        - Shuffle On/Enable Shuffle: Turn on shuffle <br />
+                        - Shuffle Off/Disable Shuffle: Turn off shuffle <br />
+                        - Repeat On/Enable Repeat: Turn on repeat <br />
+                        - Repeat Off/Disable Repeat: Turn off repeat <br />
+                        - Volume + a number from 1-100: Set audio volume <br />
+                        - Dutch: Switch text and command language to Dutch <br />
+                        - Logout: Disconnect Spotify/Return to homepage <br />
+                      </div>
+                    </div>
+                  )}
+                </Popup>
               </>
               :
               <>
                 <p>Huidige Taal: Nederlands</p>
                 <br />
                 <p>Huidig Volume: {volume}%</p>
+                <Popup
+                  trigger={<button className="popupbtn" id="popupbtn"> Commando Lijst </button>}
+                  modal
+                  nested
+                >
+                  {close => (
+                    <div className="modal">
+                      <button className="close" id="closebtn" onClick={close}>
+                        &times;
+                      </button>
+                      <div className="header"> Lijst van Commando's </div>
+                      <div className="content">
+                        - Speel/Start: Begin of ga verder met spelen <br />
+                        - Pauzeer/Stop: Pauzeer audio <br />
+                        - Volgende: Speel volgend nummer <br />
+                        - Vorige/Terug: Speel vorig nummer <br />
+                        - Shuffle Aan: Zet shuffle aan <br />
+                        - Shuffle Uit: Zet shuffle uit <br />
+                        - Herhalen aan: Zet herhalen aan <br />
+                        - Herhalen uit: Zet herhalen uit <br />
+                        - Volume + nummer van 1-100: Audio volume instellen <br />
+                        - Engels: Wissel tekst en commando taal naar Engels <br />
+                        - Log uit: Uitloggen van Spotify/Terug naar de homepagina <br />
+                      </div>
+                    </div>
+                  )}
+                </Popup>
               </>
             }
 
@@ -531,6 +599,7 @@ function EN() {
               :
               <p>is not running</p>} */}
             {/* <p>{transcript}</p> */}
+
           </>
             :
             <>
